@@ -301,6 +301,7 @@ window.Chart = function(context){
 			scaleShowGridLines : true,
 			scaleGridLineColor : "rgba(0,0,0,.05)",
 			scaleGridLineWidth : 1,
+			skipLabels : 3,
 			bezierCurve : true,
 			pointDot : true,
 			pointDotRadius : 4,
@@ -876,19 +877,18 @@ window.Chart = function(context){
 				ctx.textAlign = "center";
 			}
 			ctx.fillStyle = config.scaleFontColor;
-			for (var i=0; i<data.labels.length; i++){
-				ctx.save();
-				if (rotateLabels > 0){
-					ctx.translate(yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize);
-					ctx.rotate(-(rotateLabels * (Math.PI/180)));
-					ctx.fillText(data.labels[i], 0,0);
-					ctx.restore();
-				}
+			var l = data.labels.length-1;
+			for (var i=0; i<l+1; i++){
 				
-				else{
-					ctx.fillText(data.labels[i], yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize+3);					
+				if(config.skipLabels === false || !(i%config.skipLabels) || i==l){
+					ctx.save();
+					if (rotateLabels > 0){
+						ctx.translate(yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize);
+						ctx.rotate(-(rotateLabels * (Math.PI/180)));
+						ctx.fillText(data.labels[i], 0,0);
+						ctx.restore();
+					} else	ctx.fillText(data.labels[i], yAxisPosX + i*valueHop,xAxisPosY + config.scaleFontSize+3);
 				}
-
 				ctx.beginPath();
 				ctx.moveTo(yAxisPosX + i * valueHop, xAxisPosY+3);
 				
